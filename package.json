@@ -1,6 +1,6 @@
 {
-  "name": "npm-typescript-boilerplate",
-  "version": "1.1.1",
+  "name": "gitpost-cli",
+  "version": "0.0.1",
   "description": "typescript样板库",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -22,6 +22,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiaomingplus/gitpost-cli.git"
+  },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
     "@commitlint/config-conventional": "^7.1.2",
