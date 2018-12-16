@@ -1,7 +1,7 @@
 {
   "name": "gitpost-cli",
   "version": "0.0.1",
-  "description": "typescript样板库",
+  "description": "gitpost command line",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
