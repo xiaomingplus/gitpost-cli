@@ -81,6 +81,6 @@ async function create(projectName: string, options: any) {
         }
     }
 
-    const creator = new Creator(name, targetDir, getPromptModules())
+    const creator = new Creator(name, targetDir)
     await creator.create(options)
 }

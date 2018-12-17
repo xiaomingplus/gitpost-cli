@@ -1,26 +1,26 @@
-const path = require('path')
-const chalk = require('chalk')
-const debug = require('debug')
-const execa = require('execa')
-const inquirer = require('inquirer')
-const semver = require('semver')
-const EventEmitter = require('events')
-const Generator = require('./Generator')
-const cloneDeep = require('lodash.clonedeep')
-const sortObject = require('./util/sortObject')
-const getVersions = require('./util/getVersions')
-const { installDeps } = require('./util/installDeps')
-const { clearConsole } = require('./util/clearConsole')
-const PromptModuleAPI = require('./PromptModuleAPI')
-const writeFileTree = require('./util/writeFileTree')
-const { formatFeatures } = require('./util/features')
-const loadLocalPreset = require('./util/loadLocalPreset')
-const loadRemotePreset = require('./util/loadRemotePreset')
-const generateReadme = require('./util/generateReadme')
+import path from 'path'
+import chalk from 'chalk'
+import debug from 'debug'
+import execa from 'execa'
+import inquirer from 'inquirer'
+import semver from 'semver'
+import EventEmitter from 'events'
+import Generator from './Generator'
+import cloneDeep from 'lodash.clonedeep'
+import sortObject from './util/sortObject'
+import getVersions from './util/getVersions'
+import { installDeps } from './util/installDeps'
+import { clearConsole } from './util/clearConsole'
+import PromptModuleAPI from './PromptModuleAPI'
+import writeFileTree from './util/writeFileTree'
+import { formatFeatures } from './util/features'
+import loadLocalPreset from './util/loadLocalPreset'
+import loadRemotePreset from './util/loadRemotePreset'
+import generateReadme from './util/generateReadme'
+import { ICliOptions } from './common-types'
+import { defaults, saveOptions, loadOptions, savePreset, validatePreset } from './options'
 
-const { defaults, saveOptions, loadOptions, savePreset, validatePreset } = require('./options')
-
-const {
+import {
     log,
     warn,
     error,
@@ -31,71 +31,31 @@ const {
     stopSpinner,
     exit,
     loadModule,
-} = require('@vue/cli-shared-utils')
+} from '@vue/cli-shared-utils'
 
 const isManualMode = answers => answers.preset === '__manual__'
-
-module.exports = class Creator extends EventEmitter {
-    constructor(name, context, promptModules) {
+export default class Creator extends EventEmitter {
+    name: string
+    context: string
+    createCompleteCbs: any[]
+    constructor(name: string, context: string) {
         super()
 
         this.name = name
         this.context = process.env.VUE_CLI_CONTEXT = context
-        const { presetPrompt, featurePrompt } = this.resolveIntroPrompts()
-        this.presetPrompt = presetPrompt
-        this.featurePrompt = featurePrompt
-        this.outroPrompts = this.resolveOutroPrompts()
-        this.injectedPrompts = []
-        this.promptCompleteCbs = []
-        this.createCompleteCbs = []
 
         this.run = this.run.bind(this)
-
-        const promptAPI = new PromptModuleAPI(this)
-        promptModules.forEach(m => m(promptAPI))
+        this.createCompleteCbs = []
     }
 
-    async create(cliOptions = {}, preset = null) {
+    async create(cliOptions: ICliOptions = {}, preset = null) {
         const isTestOrDebug = process.env.VUE_CLI_TEST || process.env.VUE_CLI_DEBUG
         const { run, name, context, createCompleteCbs } = this
-
-        if (!preset) {
-            if (cliOptions.preset) {
-                // vue create foo --preset bar
-                preset = await this.resolvePreset(cliOptions.preset, cliOptions.clone)
-            } else if (cliOptions.default) {
-                // vue create foo --default
-                preset = defaults.presets.default
-            } else if (cliOptions.inlinePreset) {
-                // vue create foo --inlinePreset {...}
-                try {
-                    preset = JSON.parse(cliOptions.inlinePreset)
-                } catch (e) {
-                    error(`CLI inline preset is not valid JSON: ${cliOptions.inlinePreset}`)
-                    exit(1)
-                }
-            } else {
-                preset = await this.promptAndResolvePreset()
-            }
-        }
-
-        // clone before mutating
-        preset = cloneDeep(preset)
-        // inject core service
-        preset.plugins['@vue/cli-service'] = Object.assign(
-            {
-                projectName: name,
-            },
-            preset,
-            {
-                bare: cliOptions.bare,
-            },
-        )
 
         const packageManager = cliOptions.packageManager || loadOptions().packageManager || (hasYarn() ? 'yarn' : 'npm')
 
         await clearConsole()
-        logWithSpinner(`✨`, `Creating project in ${chalk.yellow(context)}.`)
+        logWithSpinner(`✨`, `Creating post folder in ${chalk.yellow(context)}.`)
         this.emit('creation', { event: 'creating' })
 
         // get latest CLI version
@@ -108,17 +68,7 @@ module.exports = class Creator extends EventEmitter {
             private: true,
             devDependencies: {},
         }
-        const deps = Object.keys(preset.plugins)
-        deps.forEach(dep => {
-            if (preset.plugins[dep]._isPreset) {
-                return
-            }
 
-            // Note: the default creator includes no more than `@vue/cli-*` & `@vue/babel-preset-env`,
-            // so it is fine to only test `@vue` prefix.
-            // Other `@vue/*` packages' version may not be in sync with the cli itself.
-            pkg.devDependencies[dep] = preset.plugins[dep].version || (/^@vue/.test(dep) ? `^${latestMinor}` : `latest`)
-        })
         // write package.json
         await writeFileTree(context, {
             'package.json': JSON.stringify(pkg, null, 2),
@@ -138,20 +88,14 @@ module.exports = class Creator extends EventEmitter {
         log(`⚙  Installing CLI plugins. This might take a while...`)
         log()
         this.emit('creation', { event: 'plugins-install' })
-        if (isTestOrDebug) {
-            // in development, avoid installation process
-            await require('./util/setupDevProject')(context)
-        } else {
-            await installDeps(context, packageManager, cliOptions.registry)
-        }
+
+        await installDeps(context, packageManager, cliOptions.registry)
 
         // run generator
         log(`🚀  Invoking generators...`)
         this.emit('creation', { event: 'invoking-generators' })
-        const plugins = await this.resolvePlugins(preset.plugins)
         const generator = new Generator(context, {
             pkg,
-            plugins,
             completeCbs: createCompleteCbs,
         })
         await generator.generate({
@@ -219,7 +163,7 @@ module.exports = class Creator extends EventEmitter {
         generator.printExitLogs()
     }
 
-    run(command, args) {
+    run(command: string, args?: string[]) {
         if (!args) {
             ;[command, ...args] = command.split(/\s+/)
         }
@@ -437,7 +381,7 @@ module.exports = class Creator extends EventEmitter {
         return prompts
     }
 
-    shouldInitGit(cliOptions) {
+    shouldInitGit(cliOptions: ICliOptions) {
         if (!hasGit()) {
             return false
         }
