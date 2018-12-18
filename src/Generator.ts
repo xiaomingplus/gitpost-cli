@@ -58,17 +58,26 @@ const reservedConfigTransforms = {
     }),
 }
 
-const ensureEOL = str => {
+const ensureEOL = (str:string) => {
     if (str.charAt(str.length - 1) !== '\n') {
         return str + '\n'
     }
     return str
 }
-
+export interface commonObj {
+    [key:string]:any
+}
 export default class Generator {
-    constructor(context, { pkg = {}, plugins = [], completeCbs = [], files = {}, invoking = false } = {}) {
+    files:commonObj
+    context:string
+    originalPkg:commonObj
+    pkg:commonObj
+    imports:commonObj
+    rootOptions:commonObj
+    completeCbs:any[]
+    configTransforms:commonObj
+    constructor(context:string, { pkg = {}, completeCbs = [], files = {} } = {}) {
         this.context = context
-        this.plugins = plugins
         this.originalPkg = pkg
         this.pkg = Object.assign({}, pkg)
         this.imports = {}
@@ -77,7 +86,6 @@ export default class Generator {
         this.configTransforms = {}
         this.defaultConfigTransforms = defaultConfigTransforms
         this.reservedConfigTransforms = reservedConfigTransforms
-        this.invoking = invoking
         // for conflict resolution
         this.depSources = {}
         // virtual file tree
@@ -89,11 +97,7 @@ export default class Generator {
 
         const cliService = plugins.find(p => p.id === '@vue/cli-service')
         const rootOptions = cliService ? cliService.options : inferRootOptions(pkg)
-        // apply generators from plugins
-        plugins.forEach(({ id, apply, options }) => {
-            const api = new GeneratorAPI(id, this, options, rootOptions)
-            apply(api, options, rootOptions, invoking)
-        })
+ 
     }
 
     async generate({ extractConfigFiles = false, checkExisting = false } = {}) {
@@ -110,14 +114,14 @@ export default class Generator {
         await writeFileTree(this.context, this.files, initialFiles)
     }
 
-    extractConfigFiles(extractAll, checkExisting) {
+    extractConfigFiles(extractAll:boolean, checkExisting:boolean) {
         const configTransforms = Object.assign(
             {},
             defaultConfigTransforms,
             this.configTransforms,
             reservedConfigTransforms,
         )
-        const extract = key => {
+        const extract = (key:string) => {
             if (
                 configTransforms[key] &&
                 this.pkg[key] &&
@@ -136,15 +140,6 @@ export default class Generator {
             for (const key in this.pkg) {
                 extract(key)
             }
-        } else {
-            if (!process.env.VUE_CLI_TEST) {
-                // by default, always extract vue.config.js
-                extract('vue')
-            }
-            // always extract babel.config.js as this is the only way to apply
-            // project-wide configuration even to dependencies.
-            // TODO: this can be removed when Babel supports root: true in package.json
-            extract('babel')
         }
     }
 
