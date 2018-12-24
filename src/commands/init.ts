@@ -20,10 +20,14 @@ export default class Init extends Base {
     const {args} = this.parse(Init)
     try {
       await super.generate('app', {
+        name: args.folder,
         distPath: `${process.cwd()}/${args.folder}`,
       })
     } catch (error) {
       this.error(error)
     }
+    this.log('Now, you can run gitpost hexo server preview your blog!')
+    this.log('Enjoy with gitpost!')
+
   }
 }

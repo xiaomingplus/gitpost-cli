@@ -30,28 +30,46 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`gitpost hello [FILE]`](#gitpost-hello-file)
-* [`gitpost help [COMMAND]`](#gitpost-help-command)
+- [gitpost-cli](#gitpost-cli)
+- [Usage](#usage)
+- [Commands](#commands)
+  - [`gitpost init [FOLDER]`](#gitpost-init-folder)
+  - [`gitpost hexo [HEXO_COMMAND]`](#gitpost-hexo-hexocommand)
+  - [`gitpost help [COMMAND]`](#gitpost-help-command)
 
-## `gitpost hello [FILE]`
+## `gitpost init [FOLDER]`
 
-describe the command here
+Init a gitpost project
 
 ```
 USAGE
-  $ gitpost hello [FILE]
+  $ gitpost init [FOLDER]
 
 OPTIONS
-  -f, --force
   -h, --help       show CLI help
-  -n, --name=name  name to print
 
 EXAMPLE
-  $ gitpost hello
-  hello world from ./src/hello.ts!
+  $ gitpost init blog
+  ...
+  enjoy with gitpost!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.0/src/commands/hello.ts)_
+## `gitpost hexo [HEXO_COMMAND]`
+
+run server or any hexo supoorted commands
+
+```
+USAGE
+  $ gitpost hexo [HEXO_COMMAND]
+
+OPTIONS
+  -h, --help       show CLI help
+
+EXAMPLE
+  $ gitpost hexo server
+  ...
+  
+```
 
 ## `gitpost help [COMMAND]`
 
@@ -68,5 +86,4 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.4/src/commands/help.ts)_
 <!-- commandsstop -->
