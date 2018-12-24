@@ -3,7 +3,7 @@ import {flags} from '@oclif/command'
 import Base from '../command-base'
 
 export default class Init extends Base {
-  static description = 'describe the command here'
+  static description = 'Init a gitpost project'
 
   static examples = [
     '$ gitpost init blog'
@@ -11,7 +11,6 @@ export default class Init extends Base {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    test: flags.boolean({char: 't'}),
   }
 
   static args = [{name: 'folder', required: true}]

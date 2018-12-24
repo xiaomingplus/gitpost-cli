@@ -21,7 +21,7 @@ $ npm install -g gitpost-cli
 $ gitpost COMMAND
 running command...
 $ gitpost (-v|--version|version)
-gitpost-cli/0.0.0 darwin-x64 node-v8.12.0
+gitpost-cli/0.0.1 darwin-x64 node-v8.12.0
 $ gitpost --help [COMMAND]
 USAGE
   $ gitpost COMMAND
@@ -30,46 +30,9 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-- [gitpost-cli](#gitpost-cli)
-- [Usage](#usage)
-- [Commands](#commands)
-  - [`gitpost init [FOLDER]`](#gitpost-init-folder)
-  - [`gitpost hexo [HEXO_COMMAND]`](#gitpost-hexo-hexocommand)
-  - [`gitpost help [COMMAND]`](#gitpost-help-command)
-
-## `gitpost init [FOLDER]`
-
-Init a gitpost project
-
-```
-USAGE
-  $ gitpost init [FOLDER]
-
-OPTIONS
-  -h, --help       show CLI help
-
-EXAMPLE
-  $ gitpost init blog
-  ...
-  enjoy with gitpost!
-```
-
-## `gitpost hexo [HEXO_COMMAND]`
-
-run server or any hexo supoorted commands
-
-```
-USAGE
-  $ gitpost hexo [HEXO_COMMAND]
-
-OPTIONS
-  -h, --help       show CLI help
-
-EXAMPLE
-  $ gitpost hexo server
-  ...
-  
-```
+* [`gitpost help [COMMAND]`](#gitpost-help-command)
+* [`gitpost hexo`](#gitpost-hexo)
+* [`gitpost init FOLDER`](#gitpost-init-folder)
 
 ## `gitpost help [COMMAND]`
 
@@ -86,4 +49,36 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.4/src/commands/help.ts)_
+
+## `gitpost hexo`
+
+Proxy hexo commands,support all hexo commands
+
+```
+USAGE
+  $ gitpost hexo
+
+EXAMPLE
+  $ gitpost hexo server
+```
+
+_See code: [src/commands/hexo.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.1/src/commands/hexo.ts)_
+
+## `gitpost init FOLDER`
+
+Init a gitpost project
+
+```
+USAGE
+  $ gitpost init FOLDER
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ gitpost init blog
+```
+
+_See code: [src/commands/init.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.1/src/commands/init.ts)_
 <!-- commandsstop -->
