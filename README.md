@@ -21,7 +21,7 @@ $ npm install -g gitpost-cli
 $ gitpost COMMAND
 running command...
 $ gitpost (-v|--version|version)
-gitpost-cli/0.0.2 darwin-x64 node-v8.12.0
+gitpost-cli/0.0.3 darwin-x64 node-v8.12.0
 $ gitpost --help [COMMAND]
 USAGE
   $ gitpost COMMAND
@@ -63,7 +63,7 @@ EXAMPLE
   $ gitpost hexo server
 ```
 
-_See code: [src/commands/hexo.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.2/src/commands/hexo.ts)_
+_See code: [src/commands/hexo.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.3/src/commands/hexo.ts)_
 
 ## `gitpost init FOLDER`
 
@@ -80,5 +80,5 @@ EXAMPLE
   $ gitpost init blog
 ```
 
-_See code: [src/commands/init.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/xiaomingplus/gitpost-cli/blob/v0.0.3/src/commands/init.ts)_
 <!-- commandsstop -->
