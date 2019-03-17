@@ -42,11 +42,11 @@ export default class App extends Generator {
     // install npm dependences
     const dependencies: string[] = []
     const devDependencies: string[] = []
-    dependencies.push('gitpost@^0')
-    devDependencies.push('gitpost-cli@^0')
+    dependencies.push('gitpost@^0.0.4')
+    devDependencies.push('gitpost-cli@^0.0.3')
     return Promise.all([
-      this.npmInstall(devDependencies, {'save-dev': true, ignoreScripts: true}),
-      this.npmInstall(dependencies, {save: true}),
+      this.yarnInstall(devDependencies, {dev: true, ignoreScripts: true}),
+      this.yarnInstall(dependencies),
     ])
   }
 
