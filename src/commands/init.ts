@@ -28,7 +28,7 @@ export default class Init extends Base {
     }
     this.log(chalk.green('gitpost init success!'))
     this.log(`Now, you can run
-${chalk.green('cd ' + args.folder + ' && gitpost')}
+${chalk.green('cd ' + args.folder + ' && gitpost server')}
 to preview your blog!`)
     this.log('Enjoy with gitpost!')
 
