@@ -3,17 +3,17 @@ const hexoCli = require('hexo-cli')
 const minimist = require('minimist')
 const path = require('path')
 export default class Hexo extends Command {
-  static description = `Proxy hexo commands,support all hexo commands
-View more at: https://hexo.io/zh-cn/docs/commands`
+  static description = `SGenerate static files..
+View more at: https://hexo.io/zh-cn/docs/commands#generate`
 
   static examples = [
-    "$ gitpost hexo new 'Hello'"
+    'gitpost generate'
   ]
 
   static flags = {
   }
 
   async run() {
-    hexoCli(path.resolve(process.cwd(), '.hexo'), minimist(process.argv.slice(3)))
+    hexoCli(path.resolve(process.cwd(), '.hexo'), minimist(process.argv.slice(2)))
   }
 }
